@@ -3,7 +3,7 @@ var fs = require("fs");
 var childProcess = require("child_process");
 
 var projectDir = path.dirname(path.dirname(__dirname));
-var appDir = path.join(projectDir, "app");
+var appDir = path.join(projectDir, "src/app");
 
 var packageJsonPath = path.join(projectDir, "package.json");
 var packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
