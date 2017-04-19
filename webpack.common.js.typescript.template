@@ -4,17 +4,16 @@ var nativescriptTarget = require("nativescript-dev-webpack/nativescript-target")
 var path = require("path");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var AotPlugin = require("@ngtools/webpack").AotPlugin;
 
 module.exports = function (platform, destinationApp) {
     if (!destinationApp) {
-        //Default destination inside platforms/<platform>/...
+        // Default destination inside platforms/<platform>/...
         destinationApp = nsWebpack.getAppPath(platform);
     }
     var entry = {};
     // Discover entry module from package.json
     entry.bundle = "./" + nsWebpack.getEntryModule();
-    //Vendor entry with third party libraries.
+    // Vendor entry with third party libraries.
     entry.vendor = "./vendor";
     // app.css bundle
     entry["app.css"] = "./app.css";
@@ -43,14 +42,6 @@ module.exports = function (platform, destinationApp) {
             "./vendor",
             "./bundle",
         ]),
-
-        // Angular AOT compiler
-        new AotPlugin({
-            tsConfigPath: "tsconfig.aot.json",
-            entryModule: path.resolve(__dirname, "app/app.module#AppModule"),
-            typeChecking: false
-        }),
-        new nsWebpack.StyleUrlResolvePlugin({platform}),
     ];
 
     if (process.env.npm_config_uglify) {
@@ -81,7 +72,6 @@ module.exports = function (platform, destinationApp) {
         resolve: {
             // Resolve platform-specific modules like module.android.js
             extensions: [
-                ".aot.ts",
                 ".ts",
                 ".js",
                 ".css",
@@ -105,10 +95,8 @@ module.exports = function (platform, destinationApp) {
         module: {
             loaders: [
                 {
-                    test: /\.html$|\.xml$/,
-                    loaders: [
-                        "raw-loader",
-                    ]
+                    test: /\.html$/,
+                    loader: "raw-loader"
                 },
                 // Root app.css file gets extracted with bundled dependencies
                 {
@@ -127,12 +115,11 @@ module.exports = function (platform, destinationApp) {
                         "raw-loader",
                     ]
                 },
-                // Compile TypeScript files with ahead-of-time compiler.
+                // Compile TypeScript files, replace templateUrl and styleUrls.
                 {
                     test: /\.ts$/,
                     loaders: [
-                        "nativescript-dev-webpack/tns-aot-loader",
-                        "@ngtools/webpack",
+                        "awesome-typescript-loader",
                     ]
                 },
                 // SASS support
